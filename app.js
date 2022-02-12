@@ -14,6 +14,9 @@ const session = require("express-session");
 const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync");
 const User = require("./Models/Users");
+const Blog = require("./Models/Blogs");
+
+const cors = require("cors");
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -56,6 +59,14 @@ store.on("error", function (e) {
   console.log("SESSION STORE ERROR", e);
 });
 
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -68,10 +79,11 @@ app.use((req, res, next) => {
 });
 
 app.use("/admin", admin);
-//app.use("users", users);
+app.use("users", users);
 
-app.get("/", (req, res) => {
-  res.json(req.session);
+app.get("/", async (req, res) => {
+  const blog = await Blog.find({});
+  res.json(blog);
 });
 
 app.all("*", (req, res, next) => {
@@ -81,7 +93,7 @@ app.all("*", (req, res, next) => {
 app.use((err, req, res, next) => {
   const { status = 500 } = err;
   if (!err.message) err.message = "something went wrong";
-  res.status(status).render("error", { err });
+  res.status(status).json(status);
 });
 
 const port = 4500;

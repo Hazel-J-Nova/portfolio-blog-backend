@@ -15,6 +15,7 @@ const BlogSchema = new Schema({
   introText: String,
   body: String,
   img: ImageSchema,
+  blogLink: String,
   date: { type: Date, default: Date.now() },
 });
 

@@ -7,7 +7,6 @@ const users = require("../controllers/users");
 const multer = require("multer");
 const s3Storage = multer.memoryStorage();
 const upload = multer({ storage: s3Storage });
-const { isLoggedIn } = require("../utils/middleware");
 
 router.route("/register").post(catchAsync(users.register));
 
@@ -21,10 +20,7 @@ router.route("/login").post(
 
 router.get("/logout", users.logout);
 
-router
-  .route("/resetPassword")
-  .get(catchAsync(users.renderResetPassword))
-  .post(catchAsync(users.resetPassword));
+router.route("/resetPassword").post(catchAsync(users.resetPassword));
 
 router.route("/passwordResetForm/:userId/:token").post(users.passwordResetForm);
 

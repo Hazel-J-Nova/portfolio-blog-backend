@@ -1,7 +1,3 @@
-module.exports.renderRegister = (req, res) => {
-  res.render("users/register");
-};
-
 module.exports.register = async (req, res, next) => {
   try {
     const { email, username, password } = req.body;
@@ -24,12 +20,7 @@ module.exports.login = (req, res) => {
 module.exports.logout = (req, res) => {
   req.logout();
   // req.session.destroy();
-  req.flash("success", "Goodbye!");
-  res.redirect("/");
-};
-
-module.exports.renderResetPassword = (req, res) => {
-  res.render("users/resetPassword");
+  res.json("/");
 };
 
 module.exports.resetPassword = async (req, res, next) => {
@@ -38,7 +29,7 @@ module.exports.resetPassword = async (req, res, next) => {
     const user = await User.findOne({ username: userName });
     if (!user) {
       req.flash("error", "sorry there is no user with that name");
-      res.redirect("/");
+      res.json("/");
     }
     let htmlTemplate = fs.readFileSync(resetEmailPath, "utf8");
     htmlTemplate = htmlTemplate
@@ -57,16 +48,11 @@ module.exports.resetPassword = async (req, res, next) => {
     );
     sendEmail(params);
     req.flash("success", "please check your email");
-    res.redirect("/");
+    res.json("/");
   } catch (e) {
     req.flash("error", e.message);
-    res.redirect("/");
+    res.json("/");
   }
-};
-
-module.exports.renderPasswordResetForm = (req, res) => {
-  const params = req.params;
-  res.render("users/passwordResetForm", { params });
 };
 
 module.exports.passwordResetForm = async (req, res) => {
@@ -77,35 +63,15 @@ module.exports.passwordResetForm = async (req, res) => {
   const user = await User.findOne({ username: userName });
   if (!user || userName !== user.username || user.token !== token || !token) {
     req.flash("error", "sorry no user with that Id");
-    res.redirect("/");
+    res.json("/");
   }
   user.setPassword(req.body.password);
   user.token = "";
   req.flash("success", "password updated");
-  res.redirect("/user/login");
+  res.json("/user/login");
 };
 
 module.exports.userProfile = async (req, res) => {
   const { userName } = req.params;
   const currentUser = await User.findOne({ username: userName });
-
-  const creator = await Creator.findOne({ user: currentUser.id })
-    .populate("content")
-    .populate("categories");
-  res.render("users/profile", { creator, currentUser });
-};
-
-module.exports.updateUserProfileForm = async (req, res) => {
-  res.render("users/updateProfile");
-};
-
-module.exports.updateUserProfile = async (req, res) => {
-  let { userName } = req.params;
-  const currentUser = await User.findOne({ username: userName });
-  const creator = await Creator.findOne({ user: currentUser.id });
-  const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
-
-  await creator.avatar.push(...imgs);
-  await creator.save();
-  res.redirect(`user/${userName}`, currentUser);
 };
