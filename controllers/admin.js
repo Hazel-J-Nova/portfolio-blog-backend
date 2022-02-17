@@ -2,6 +2,7 @@ const res = require("express/lib/response");
 const mongoose = require("mongoose");
 const Blog = require("../Models/Blogs");
 const PortfolioItems = require("../Models/PortfolioItems");
+const Comment = require("../Models/Comments");
 
 module.exports.postBlog = async (req, res) => {
   const blog = JSON.parse(JSON.stringify(req.body));
@@ -13,7 +14,7 @@ module.exports.postBlog = async (req, res) => {
 };
 
 module.exports.getBlogs = async (req, res) => {
-  const allBlogs = await Blog.find({}).sort({ date: -1 });
+  const allBlogs = await Blog.find({}).populate(Comment).sort({ date: -1 });
   res.json(allBlogs);
 };
 
