@@ -62,9 +62,6 @@ store.on("error", function (e) {
 app.use(
   cors({
     origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true,
   })
 );
 app.use(passport.initialize());
@@ -82,8 +79,11 @@ app.use("/admin", admin);
 app.use("users", users);
 
 app.get("/", async (req, res) => {
-  const blog = await Blog.find({});
-  res.json(blog);
+  const user = req.user;
+  if (user) {
+    res.json(user);
+  }
+  res.json("aaaaa");
 });
 
 app.all("*", (req, res, next) => {

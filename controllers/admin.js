@@ -7,20 +7,21 @@ module.exports.postBlog = async (req, res) => {
   const blog = JSON.parse(JSON.stringify(req.body));
   const newBlog = await new Blog(blog);
   const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
-  console.log(newBlog);
   newBlog.img = imgs[0];
   await newBlog.save();
   res.json("success");
 };
 
 module.exports.getBlogs = async (req, res) => {
-  const allBlogs = await Blog.find({});
+  const allBlogs = await Blog.find({}).sort({ date: -1 });
   res.json(allBlogs);
 };
 
 module.exports.getIndvidualBlog = async (req, res) => {
   const { blogId } = req.params;
   const blog = await Blog.findById(blogId);
+  console.log(blog);
+
   res.json(blog);
 };
 

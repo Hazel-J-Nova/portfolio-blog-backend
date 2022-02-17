@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Content = require("./Comments");
 
 ImageSchema = new Schema({
   url: String,
@@ -17,6 +18,12 @@ const BlogSchema = new Schema({
   img: ImageSchema,
   blogLink: String,
   date: { type: Date, default: Date.now() },
+  comments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comments",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Blog", BlogSchema);

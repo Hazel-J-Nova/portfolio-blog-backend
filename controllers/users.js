@@ -23,37 +23,37 @@ module.exports.logout = (req, res) => {
   res.json("/");
 };
 
-module.exports.resetPassword = async (req, res, next) => {
-  try {
-    const { userName } = req.body;
-    const user = await User.findOne({ username: userName });
-    if (!user) {
-      req.flash("error", "sorry there is no user with that name");
-      res.json("/");
-    }
-    let htmlTemplate = fs.readFileSync(resetEmailPath, "utf8");
-    htmlTemplate = htmlTemplate
-      .replace("username", userName)
-      .replace(
-        "registerLink",
-        `https://www.knockouttalent/api/${user._id}/${user.token}`
-      );
-    let email = "knockout.talent.models@gmail.com";
+// module.exports.resetPassword = async (req, res, next) => {
+//   try {
+//     const { userName } = req.body;
+//     const user = await User.findOne({ username: userName });
+//     if (!user) {
+//       req.flash("error", "sorry there is no user with that name");
+//       res.json("/");
+//     }
+//     let htmlTemplate = fs.readFileSync(resetEmailPath, "utf8");
+//     htmlTemplate = htmlTemplate
+//       .replace("username", userName)
+//       .replace(
+//         "registerLink",
+//         `https://www.knockouttalent/api/${user._id}/${user.token}`
+//       );
+//     let email = "knockout.talent.models@gmail.com";
 
-    let params = buildParams(
-      email,
-      "Reset your password",
-      htmlTemplate,
-      htmlTemplate
-    );
-    sendEmail(params);
-    req.flash("success", "please check your email");
-    res.json("/");
-  } catch (e) {
-    req.flash("error", e.message);
-    res.json("/");
-  }
-};
+//     let params = buildParams(
+//       email,
+//       "Reset your password",
+//       htmlTemplate,
+//       htmlTemplate
+//     );
+//     sendEmail(params);
+//     req.flash("success", "please check your email");
+//     res.json("/");
+//   } catch (e) {
+//     req.flash("error", e.message);
+//     res.json("/");
+//   }
+// };
 
 module.exports.passwordResetForm = async (req, res) => {
   const newPassword = req.body.password;
