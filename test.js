@@ -1,6 +1,3 @@
-const arr = [1, 2, 3, 4];
+let a = [1, 2, 3, 4];
 
-const newArr = arr.filter((num) => {
-  return num !== 2;
-});
-console.log(newArr);
+console.log(typeof a);

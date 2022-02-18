@@ -17,6 +17,7 @@ const BlogSchema = new Schema({
   body: String,
   img: ImageSchema,
   blogLink: String,
+  tags: [{ type: String }],
   date: { type: Date, default: Date.now() },
   comments: [
     {

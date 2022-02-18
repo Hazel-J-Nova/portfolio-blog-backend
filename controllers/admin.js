@@ -14,7 +14,7 @@ module.exports.postBlog = async (req, res) => {
 };
 
 module.exports.getBlogs = async (req, res) => {
-  const allBlogs = await Blog.find({}).populate(Comment).sort({ date: -1 });
+  const allBlogs = await Blog.find({}).populate("comments").sort({ date: -1 });
   res.json(allBlogs);
 };
 
@@ -37,4 +37,15 @@ module.exports.addPortfolioItem = async (req, res) => {
 module.exports.getPorfolioItems = async (req, res) => {
   const allPortfolioItems = await PortfolioItems.find({});
   res.json(allPortfolioItems);
+};
+
+module.exports.addComment = async (req, res) => {
+  const { blogId } = req.params;
+  const comment = JSON.parse(JSON.stringify(req.body));
+  const newComment = await new Comment(comment);
+  const blog = await Blog.findById(blogId);
+  blog.comment.push(newComment);
+  await newComment.save();
+  await blog.save();
+  res.json("succes");
 };
