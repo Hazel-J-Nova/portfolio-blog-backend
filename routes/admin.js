@@ -18,4 +18,6 @@ router
   .get(admin.getPorfolioItems)
   .post(checkAdmin, uploadCloudinary.array("image"), admin.addPortfolioItem);
 
+router.route("/comment").post(checkAdmin, admin.addComment);
+
 module.exports = router;

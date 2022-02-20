@@ -5,7 +5,8 @@ const PortfolioItems = require("../Models/PortfolioItems");
 const Comment = require("../Models/Comments");
 
 module.exports.postBlog = async (req, res) => {
-  const blog = JSON.parse(JSON.stringify(req.body));
+  let blog = JSON.parse(JSON.stringify(req.body));
+  blog.tags = blog.tags.split(",");
   const newBlog = await new Blog(blog);
   const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   newBlog.img = imgs[0];
@@ -14,7 +15,8 @@ module.exports.postBlog = async (req, res) => {
 };
 
 module.exports.getBlogs = async (req, res) => {
-  const allBlogs = await Blog.find({}).populate("comments").sort({ date: -1 });
+  let allBlogs = await Blog.find({}).populate("comments").sort({ date: -1 });
+
   res.json(allBlogs);
 };
 
@@ -23,7 +25,7 @@ module.exports.getIndvidualBlog = async (req, res) => {
   const blog = await Blog.findById(blogId);
   console.log(blog);
 
-  res.json(blog);
+  res.send(blog);
 };
 
 module.exports.addPortfolioItem = async (req, res) => {

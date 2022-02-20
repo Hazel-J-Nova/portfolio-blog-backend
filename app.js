@@ -79,11 +79,14 @@ app.use("/admin", admin);
 app.use("users", users);
 
 app.get("/", async (req, res) => {
+  const blog = await Blog.findById("620ad4126471d174717282dc");
+  blog.tags.push("React");
+  await blog.save();
   const user = req.user;
   if (user) {
     res.json(user);
   }
-  res.json("aaaaa");
+  res.send(blog);
 });
 
 app.all("*", (req, res, next) => {
