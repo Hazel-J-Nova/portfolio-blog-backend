@@ -32,7 +32,7 @@ db.once("open", () => {
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
-
+app.use(bodyParser.json());
 const secret = "thisshouldbeabettersecret";
 
 const store = MongoStore.create({
@@ -66,7 +66,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(User.createStrategy());
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -76,17 +76,13 @@ app.use((req, res, next) => {
 });
 
 app.use("/admin", admin);
-app.use("users", users);
+app.use("/users", users);
 
 app.get("/", async (req, res) => {
-  const blog = await Blog.findById("620ad4126471d174717282dc");
-  blog.tags.push("React");
-  await blog.save();
+  const currentUsers = await User.find({});
   const user = req.user;
-  if (user) {
-    res.json(user);
-  }
-  res.send(blog);
+  console.log(currentUsers);
+  res.json("aa");
 });
 
 app.all("*", (req, res, next) => {

@@ -8,15 +8,9 @@ const multer = require("multer");
 const s3Storage = multer.memoryStorage();
 const upload = multer({ storage: s3Storage });
 
-router.route("/register").post(catchAsync(users.register));
+router.route("/register").post(users.register);
 
-router.route("/login").post(
-  passport.authenticate("local", {
-    failureFlash: true,
-    failureRedirect: "/login",
-  }),
-  users.login
-);
+router.route("/login").post(passport.authenticate("local"), users.login);
 
 router.get("/logout", users.logout);
 
