@@ -79,10 +79,9 @@ app.use("/admin", admin);
 app.use("/users", users);
 
 app.get("/", async (req, res) => {
-  const currentUsers = await User.find({});
   const user = req.user;
-  console.log(currentUsers);
-  res.json("aa");
+
+  res.json(user);
 });
 
 app.all("*", (req, res, next) => {
