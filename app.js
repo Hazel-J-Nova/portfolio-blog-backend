@@ -84,6 +84,10 @@ app.use((req, res, next) => {
 app.use("/admin", admin);
 app.use("/users", users);
 
+app.get("/", (req, res) => {
+  res.json("hello");
+});
+
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page Not Found", 404));
 });
