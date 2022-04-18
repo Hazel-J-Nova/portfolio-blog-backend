@@ -17,11 +17,11 @@ const users = require("./routes/users");
 const session = require("express-session");
 const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync");
-// const User = require("./Models/Users");
-// const Blog = require("./Models/Blogs");
-// const mongoSanatize = require("express-mongo-sanitize");
+const User = require("./Models/Users");
+const Blog = require("./Models/Blogs");
+const mongoSanatize = require("express-mongo-sanitize");
 
-// const cors = require("cors");
+const cors = require("cors");
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
