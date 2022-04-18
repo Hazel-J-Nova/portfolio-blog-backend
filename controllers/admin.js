@@ -98,7 +98,9 @@ module.exports.getAllComments = async (req, res) => {
   const { blogId } = req.params;
   const blog = await Blog.findById(blogId).populate("comments");
   const comments = blog.comments;
-  res.json(comments);
+  if (comments) {
+    res.json(comments);
+  }
 };
 
 module.exports.editComment = async (req, res) => {

@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -7,7 +11,7 @@ const LocalStrategy = require("passport-local");
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
 const MongoStore = require("connect-mongo");
-const dbUrl = "mongodb://localhost:27017/caesurablog";
+const dbUrl = process.env.MONGO_CONNECT;
 const admin = require("./routes/admin");
 const users = require("./routes/users");
 const session = require("express-session");
@@ -15,8 +19,10 @@ const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync");
 const User = require("./Models/Users");
 const Blog = require("./Models/Blogs");
+const mongoSanatize = require("express-mongo-sanitize");
 
 const cors = require("cors");
+
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -33,7 +39,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 app.use(bodyParser.json());
-const secret = "thisshouldbeabettersecret";
+const secret = process.env.SECRET || "thisshouldbeabettersecret";
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
@@ -58,6 +64,7 @@ app.use(
 store.on("error", function (e) {
   console.log("SESSION STORE ERROR", e);
 });
+app.use(mongoSanatize);
 
 app.use(
   cors({
