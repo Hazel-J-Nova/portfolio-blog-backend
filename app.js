@@ -17,11 +17,11 @@ const users = require("./routes/users");
 const session = require("express-session");
 const ExpressError = require("./utils/ExpressError");
 const catchAsync = require("./utils/catchAsync");
-const User = require("./Models/Users");
-const Blog = require("./Models/Blogs");
-const mongoSanatize = require("express-mongo-sanitize");
+// const User = require("./Models/Users");
+// const Blog = require("./Models/Blogs");
+// const mongoSanatize = require("express-mongo-sanitize");
 
-const cors = require("cors");
+// const cors = require("cors");
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -40,63 +40,63 @@ app.use(methodOverride("_method"));
 app.use(bodyParser.json());
 const secret = process.env.SECRET || "thisshouldbeabettersecret";
 
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  touchAfter: 24 * 60 * 60,
-});
+// const store = MongoStore.create({
+//   mongoUrl: dbUrl,
+//   touchAfter: 24 * 60 * 60,
+// });
 
-app.use(
-  session({
-    secret: secret,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      // secure: true,
-      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
-    store: store,
-  })
-);
+// app.use(
+//   session({
+//     secret: secret,
+//     resave: true,
+//     saveUninitialized: true,
+//     cookie: {
+//       httpOnly: true,
+//       // secure: true,
+//       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+//       maxAge: 1000 * 60 * 60 * 24 * 7,
+//     },
+//     store: store,
+//   })
+// );
 
-store.on("error", function (e) {
-  console.log("SESSION STORE ERROR", e);
-});
-app.use(mongoSanatize);
+// store.on("error", function (e) {
+//   console.log("SESSION STORE ERROR", e);
+// });
+// app.use(mongoSanatize);
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(User.createStrategy());
+// app.use(
+//   cors({
+//     origin: "*",
+//   })
+// );
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(User.createStrategy());
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-app.use((req, res, next) => {
-  res.locals.currentUser = req.user;
-  next();
-});
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
+// app.use((req, res, next) => {
+//   res.locals.currentUser = req.user;
+//   next();
+// });
 
-app.use("/admin", admin);
-app.use("/users", users);
+// app.use("/admin", admin);
+// app.use("/users", users);
 
 app.get("/", (req, res) => {
   res.json("hello");
 });
 
-app.all("*", (req, res, next) => {
-  next(new ExpressError("Page Not Found", 404));
-});
+// app.all("*", (req, res, next) => {
+//   next(new ExpressError("Page Not Found", 404));
+// });
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500 } = err;
-  if (!err.message) err.message = "Oh No, Something Went Wrong!";
-  res.status(statusCode).render("error", { err });
-});
+// app.use((err, req, res, next) => {
+//   const { statusCode = 500 } = err;
+//   if (!err.message) err.message = "Oh No, Something Went Wrong!";
+//   res.status(statusCode).render("error", { err });
+// });
 
 const port = process.env.PORT || 4500;
 
