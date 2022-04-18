@@ -63,7 +63,7 @@ app.use(
 store.on("error", function (e) {
   console.log("SESSION STORE ERROR", e);
 });
-// app.use(mongoSanatize);
+app.use(mongoSanatize);
 
 // app.use(
 //   cors({
