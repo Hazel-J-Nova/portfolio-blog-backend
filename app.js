@@ -40,10 +40,10 @@ app.use(methodOverride("_method"));
 app.use(bodyParser.json());
 const secret = process.env.SECRET || "thisshouldbeabettersecret";
 
-// const store = MongoStore.create({
-//   mongoUrl: dbUrl,
-//   touchAfter: 24 * 60 * 60,
-// });
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60,
+});
 
 // app.use(
 //   session({
