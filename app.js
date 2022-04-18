@@ -63,40 +63,40 @@ app.use(
 store.on("error", function (e) {
   console.log("SESSION STORE ERROR", e);
 });
-app.use(mongoSanatize);
+// app.use(mongoSanatize);
 
-// app.use(
-//   cors({
-//     origin: "*",
-//   })
-// );
-// app.use(passport.initialize());
-// app.use(passport.session());
-// passport.use(User.createStrategy());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(User.createStrategy());
 
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
-// app.use((req, res, next) => {
-//   res.locals.currentUser = req.user;
-//   next();
-// });
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
 
-// app.use("/admin", admin);
-// app.use("/users", users);
+app.use("/admin", admin);
+app.use("/users", users);
 
 app.get("/", (req, res) => {
   res.json("hello");
 });
 
-// app.all("*", (req, res, next) => {
-//   next(new ExpressError("Page Not Found", 404));
-// });
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page Not Found", 404));
+});
 
-// app.use((err, req, res, next) => {
-//   const { statusCode = 500 } = err;
-//   if (!err.message) err.message = "Oh No, Something Went Wrong!";
-//   res.status(statusCode).render("error", { err });
-// });
+app.use((err, req, res, next) => {
+  const { statusCode = 500 } = err;
+  if (!err.message) err.message = "Oh No, Something Went Wrong!";
+  res.status(statusCode).render("error", { err });
+});
 
 const port = process.env.PORT || 4500;
 
