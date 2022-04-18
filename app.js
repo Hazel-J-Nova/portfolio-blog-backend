@@ -85,7 +85,8 @@ app.use("/admin", admin);
 app.use("/users", users);
 
 app.get("/", (req, res) => {
-  res.json("hello");
+  const user = req.user;
+  res.json(user);
 });
 
 app.all("*", (req, res, next) => {
