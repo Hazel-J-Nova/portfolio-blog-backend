@@ -24,8 +24,6 @@ module.exports.getBlogs = async (req, res) => {
 module.exports.getIndvidualBlog = async (req, res) => {
   const { blogId } = req.params;
   const blog = await Blog.findById(blogId);
-  console.log(blog);
-
   res.json(blog);
 };
 
@@ -53,7 +51,6 @@ module.exports.addPortfolioItem = async (req, res) => {
   const newPortfolioItem = await new PortfolioItems(portfolioItem);
   const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   newPortfolioItem.img = imgs[0];
-
   await portfolioItem.save();
   res.json("success");
 };
@@ -71,6 +68,7 @@ module.exports.getIndvidualPorfolioItems = async (req, res) => {
 
 module.exports.deletIndvidualPortfolioItem = async (req, res) => {
   const portfolioItemToDelete = await PortfolioItems.findByIdAndDelete();
+  res.send("success");
 };
 
 module.exports.editIndividualPortfolioItem = async (req, res) => {

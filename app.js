@@ -84,7 +84,7 @@ app.use((req, res, next) => {
 app.use("/admin", admin);
 app.use("/users", users);
 
-app.get("/", async (req, res) => {
+app.get("/", (req, res) => {
   res.send("hello");
 });
 
