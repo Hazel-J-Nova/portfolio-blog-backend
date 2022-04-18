@@ -44,4 +44,5 @@ module.exports.passwordResetForm = async (req, res) => {
 module.exports.userProfile = async (req, res) => {
   const { userName } = req.params;
   const currentUser = await User.findOne({ username: userName });
+  res.json(currentUser);
 };
