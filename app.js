@@ -23,7 +23,6 @@ const mongoSanatize = require("express-mongo-sanitize");
 
 const cors = require("cors");
 
-
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -101,7 +100,7 @@ app.use((err, req, res, next) => {
   res.status(status).json(status);
 });
 
-const port = 4500;
+const port = process.env.PORT || 4500;
 
 app.listen(port, () => {
   console.log(`listening on ${port}`);
