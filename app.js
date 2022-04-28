@@ -84,9 +84,10 @@ app.use((req, res, next) => {
 app.use("/admin", admin);
 app.use("/users", users);
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  const allUsers = await User.find({});
   const user = req.user;
-  res.json(user);
+  res.json(allUsers);
 });
 
 app.all("*", (req, res, next) => {
