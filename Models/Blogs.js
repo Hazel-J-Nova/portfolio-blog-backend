@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Content = require("./Comments");
 
 ImageSchema = new Schema({
   url: String,

@@ -121,7 +121,6 @@ module.exports.deleteComment = async (req, res) => {
 };
 
 module.exports.email = async (req, res) => {
-  console.log(process.env.EMAIL_PASSWORD);
   const emailData = req.body;
   let emailOptions = {
     from: '"Hazel Tate" <Hazel.Tate@caesura.dev>',

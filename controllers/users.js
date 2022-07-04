@@ -32,7 +32,6 @@ module.exports.passwordResetForm = async (req, res) => {
   const { token } = req.params;
   const user = await User.findOne({ username: userName });
   if (!user || userName !== user.username || user.token !== token || !token) {
-    req.flash("error", "sorry no user with that Id");
     res.json("/");
   }
   user.setPassword(req.body.password);
