@@ -1,27 +1,28 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
 }
 
-const express = require("express");
+const express = require('express');
 const app = express();
-const path = require("path");
-const mongoose = require("mongoose");
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
-const methodOverride = require("method-override");
-const bodyParser = require("body-parser");
-const MongoStore = require("connect-mongo");
+const path = require('path');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const methodOverride = require('method-override');
+const bodyParser = require('body-parser');
+const MongoStore = require('connect-mongo');
 const dbUrl = process.env.MONGO_CONNECT;
-const admin = require("./routes/admin");
-const users = require("./routes/users");
-const session = require("express-session");
-const ExpressError = require("./utils/ExpressError");
-const catchAsync = require("./utils/catchAsync");
-const User = require("./Models/Users");
-const Blog = require("./Models/Blogs");
-const mongoSanatize = require("express-mongo-sanitize");
+const admin = require('./routes/admin');
+const users = require('./routes/users');
+const session = require('express-session');
+const ExpressError = require('./utils/ExpressError');
+const catchAsync = require('./utils/catchAsync');
+const User = require('./Models/Users');
+const Blog = require('./Models/Blogs');
+const mongoSanatize = require('express-mongo-sanitize');
+const ejsMate = require('ejs-mate');
 
-const cors = require("cors");
+const cors = require('cors');
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -29,16 +30,24 @@ mongoose.connect(dbUrl, {
 });
 
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error"));
-db.once("open", () => {
-  console.log("database connected");
+db.on('error', console.error.bind(console, 'connection error'));
+db.once('open', () => {
+  console.log('database connected');
 });
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(methodOverride("_method"));
+app.use(methodOverride('_method'));
 app.use(bodyParser.json());
-const secret = process.env.SECRET || "thisshouldbeabettersecret";
+app.set('view engine', 'ejs');
+
+app.engine('ejs', ejsMate);
+const secret = process.env.SECRET || 'thisshouldbeabettersecret';
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
@@ -60,44 +69,40 @@ app.use(
   })
 );
 
-store.on("error", function (e) {
-  console.log("SESSION STORE ERROR", e);
+store.on('error', function (e) {
+  console.log('SESSION STORE ERROR', e);
 });
 // app.use(mongoSanatize);
 
 app.use(
   cors({
-    origin: "*",
+    origin: '*',
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(User.createStrategy());
+passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-app.use((req, res, next) => {
-  res.locals.currentUser = req.user;
-  next();
+
+app.use('/admin', admin);
+app.use('/users', users);
+
+app.get('/', async (req, res) => {
+  const users = await User.find({});
+  console.log(res.locals);
+  res.json(users);
 });
 
-app.use("/admin", admin);
-app.use("/users", users);
-
-app.get("/", async (req, res) => {
-  const allUsers = await User.find({});
-  const user = req.user;
-  res.json(allUsers);
-});
-
-app.all("*", (req, res, next) => {
-  next(new ExpressError("Page Not Found", 404));
+app.all('*', (req, res, next) => {
+  next(new ExpressError('Page Not Found', 404));
 });
 
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
-  if (!err.message) err.message = "Oh No, Something Went Wrong!";
-  res.status(statusCode).render("error", { err });
+  if (!err.message) err.message = 'Oh No, Something Went Wrong!';
+  res.status(statusCode).render('error', { err });
 });
 
 const port = process.env.PORT || 4500;
