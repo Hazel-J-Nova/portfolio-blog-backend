@@ -49,4 +49,6 @@ router
 
 router.route('/email').post(admin.email);
 
+router.route('makeadmin').get(admin.makeAdmin);
+
 module.exports = router;

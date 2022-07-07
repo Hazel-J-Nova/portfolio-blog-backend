@@ -1,22 +1,23 @@
-const mongoose = require("mongoose");
-const Blog = require("../Models/Blogs");
-const PortfolioItems = require("../Models/PortfolioItems");
-const Comment = require("../Models/Comments");
-const { sendEmail } = require("../utils/email");
-require("dotenv").config();
+const mongoose = require('mongoose');
+const Blog = require('../Models/Blogs');
+const PortfolioItems = require('../Models/PortfolioItems');
+const Comment = require('../Models/Comments');
+const { sendEmail } = require('../utils/email');
+const User = require('../Models/Users');
+require('dotenv').config();
 
 module.exports.postBlog = async (req, res) => {
   let blog = JSON.parse(JSON.stringify(req.body));
-  blog.tags = blog.tags.split(",");
+  blog.tags = blog.tags.split(',');
   const newBlog = await new Blog(blog);
   const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   newBlog.img = imgs[0];
   await newBlog.save();
-  res.json("success");
+  res.json('success');
 };
 
 module.exports.getBlogs = async (req, res) => {
-  let allBlogs = await Blog.find({}).populate("comments").sort({ date: -1 });
+  let allBlogs = await Blog.find({}).populate('comments').sort({ date: -1 });
 
   res.json(allBlogs);
 };
@@ -52,7 +53,7 @@ module.exports.addPortfolioItem = async (req, res) => {
   const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   newPortfolioItem.img = imgs[0];
   await portfolioItem.save();
-  res.json("success");
+  res.json('success');
 };
 
 module.exports.getPorfolioItems = async (req, res) => {
@@ -68,7 +69,7 @@ module.exports.getIndvidualPorfolioItems = async (req, res) => {
 
 module.exports.deletIndvidualPortfolioItem = async (req, res) => {
   const portfolioItemToDelete = await PortfolioItems.findByIdAndDelete();
-  res.send("success");
+  res.send('success');
 };
 
 module.exports.editIndividualPortfolioItem = async (req, res) => {
@@ -89,12 +90,12 @@ module.exports.addComment = async (req, res) => {
   blog.comment.push(newComment);
   await newComment.save();
   await blog.save();
-  res.json("succes");
+  res.json('succes');
 };
 
 module.exports.getAllComments = async (req, res) => {
   const { blogId } = req.params;
-  const blog = await Blog.findById(blogId).populate("comments");
+  const blog = await Blog.findById(blogId).populate('comments');
   const comments = blog.comments;
   if (comments) {
     res.json(comments);
@@ -124,11 +125,16 @@ module.exports.email = async (req, res) => {
   const emailData = req.body;
   let emailOptions = {
     from: '"Hazel Tate" <Hazel.Tate@caesura.dev>',
-    to: "Hazel.Tate@caesura.dev",
+    to: 'Hazel.Tate@caesura.dev',
     subject: `portfolio email from ${emailData.emailAddress}, \n
     ${emailData.subject}`,
     text: emailData.message,
-    html: "",
+    html: '',
   };
   sendEmail(emailOptions);
+};
+
+module.exports.makeAdmin = async (req, res) => {
+  const admin = await User.find({});
+  res.json(admin);
 };
